@@ -1,8 +1,9 @@
 pipeline {
 
   stages {
-    agent { docker { image 'maven:3.3.3' } }
+    
     stage('compile') {
+      agent { docker { image 'maven:3.3.3' } }
       steps {
         sh 'mvn clean install'
       }
@@ -20,12 +21,13 @@ pipeline {
         )
       }
     }
-  }
-        stage('docker') {      
+            stage('docker') {      
         steps {
                         sh "docker build -f Dockerfile ./"
                     }
     }  
+  }
+
   
   
 }
