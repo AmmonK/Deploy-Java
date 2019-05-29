@@ -19,7 +19,9 @@ agent { docker { image 'maven:3.3.3' } }
         )
       }
     }
-    stage('docker') {      
+  }
+  agent any {
+        stage('docker') {      
         steps {
                         sh "docker build -f Dockerfile ./"
                     }
