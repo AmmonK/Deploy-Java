@@ -21,7 +21,7 @@ agent { docker { image 'maven:3.3.3' } }
     }
     stage('docker') {      
         steps {
-                        sh "docker build -f Dockerfile -t ${REPO}:${COMMIT} ./"
+                        sh "docker build -f Dockerfile ./"
                     }
     }  
   }
