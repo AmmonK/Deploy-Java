@@ -6,11 +6,7 @@ pipeline {
       agent { docker { image 'maven:3.3.3' } }
       steps {
         sh 'mvn clean install'
-      }
-    }
-    stage('archive') {
-      steps {
-        parallel(
+         parallel(
           "Junit": {
             junit 'target/surefire-reports/*.xml'
             
@@ -19,6 +15,11 @@ pipeline {
             archiveArtifacts(artifacts: 'target/deploy-java-0.0.1.jar', onlyIfSuccessful: true, fingerprint: true)                        
           }
         )
+      }
+    }
+    stage('archive') {
+      steps {
+       
       }
     }
             stage('docker') {      
