@@ -14,8 +14,8 @@ agent { docker { image 'maven:3.3.3' } }
             
           },
           "Archive": {
-            archiveArtifacts(artifacts: 'target/Nadia.jar', onlyIfSuccessful: true, fingerprint: true)
-            archiveArtifacts(artifacts: 'target/Nadia*javadoc.jar', fingerprint: true)
+            archiveArtifacts(artifacts: 'target/deploy-java-0.0.1.jar', onlyIfSuccessful: true, fingerprint: true)
+            archiveArtifacts(artifacts: 'target/deploy-java-0.0.1*javadoc.jar', fingerprint: true)
             
           }
         )
