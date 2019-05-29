@@ -1,52 +1,30 @@
-#!/usr/bin/env groovy
-// see https://jenkins.io/doc/book/pipeline/syntax/
-
 pipeline {
-
-    agent any
-
-    tools {
-        maven "Maven"
-    }
-
-    triggers {
-        pollSCM "* * * * *"
+  agent {
+    dockerfile {
+      filename 'docker/Dockerfile'
     }
     
-    options {
-        timestamps()
-        ansiColor("xterm")
+  }
+  stages {
+    stage('compile') {
+      steps {
+        sh 'mvn clean install'
+      }
     }
-
-    parameters {
-        booleanParam(name: "RELEASE",
-                description: "Build a release from current commit.",
-                defaultValue: false)
+    stage('archive') {
+      steps {
+        parallel(
+          "Junit": {
+            junit 'target/surefire-reports/*.xml'
+            
+          },
+          "Archive": {
+            archiveArtifacts(artifacts: 'target/Nadia.jar', onlyIfSuccessful: true, fingerprint: true)
+            archiveArtifacts(artifacts: 'target/Nadia*javadoc.jar', fingerprint: true)
+            
+          }
+        )
+      }
     }
-
-    stages {
-
-        stage("Build & Deploy SNAPSHOT") {
-            steps {
-                sh "mvn -B deploy"
-            }
-        }
-
-        stage("Release") {
-            when {
-                expression { params.RELEASE }
-            }
-            steps {
-                sh "mvn -B release:prepare"
-                sh "mvn -B release:perform"
-            }
-        }
-
-    }
-
-    post {
-        always {
-            deleteDir()
-        }
-    }
+  }
 }
